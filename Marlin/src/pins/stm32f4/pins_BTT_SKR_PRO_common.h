@@ -55,7 +55,7 @@
 // Servos
 //
 #define SERVO0_PIN                          PA1
-#define SERVO1_PIN                          PC9
+#define SERVO1_PIN                          PE5
 
 //
 // Trinamic Stallguard pins
