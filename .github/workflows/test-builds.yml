@@ -10,6 +10,7 @@ on:
     branches:
     - bugfix-2.1.x
     - 2.1.x
+    - MattCNC2024
     paths-ignore:
     - config/**
     - data/**
@@ -19,6 +20,7 @@ on:
     branches:
     - bugfix-2.1.x
     - 2.1.x
+    - MattCNC2024
     paths-ignore:
     - config/**
     - data/**
@@ -28,7 +30,7 @@ on:
 jobs:
   test_builds:
     name: Run All Tests
-    if: github.repository == 'MarlinFirmware/Marlin'
+    if: github.repository == 'mattcoon/Marlin'
 
     runs-on: ubuntu-latest
 
