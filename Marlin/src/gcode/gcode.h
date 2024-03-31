@@ -357,6 +357,7 @@ enum AxisRelative : uint8_t {
 typedef bits_t(NUM_REL_MODES) relative_t;
 
 extern const char G28_STR[];
+void writeSDConfig(void);
 
 class GcodeSuite {
 public:
@@ -1073,6 +1074,7 @@ private:
   #endif
 
   static void M500();
+
   static void M501();
   static void M502();
   #if DISABLED(DISABLE_M503)

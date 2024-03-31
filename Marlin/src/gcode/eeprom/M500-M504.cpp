@@ -34,7 +34,9 @@
  * M500: Store settings in EEPROM
  */
 void GcodeSuite::M500() {
+  writeSDConfig();
   (void)settings.save();
+
 }
 
 /**
