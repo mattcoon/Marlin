@@ -29,22 +29,9 @@
 #include "../libs/buzzer.h"
 #include "../lcd/marlinui.h"
 
-#include "../lcd/e3v2/proui/dwinui.h" // mmm
-#include "../lcd/e3v2/proui/dwin_lcd.h" // mmm
 #include "custom_gcodes.h"
 #include "../core/macros.h" // mmm
 #include "../module/planner.h" // mmm
-
-#if HAS_MEDIA
-  // #include "file_header.h"
-#endif
-
-#ifdef DWIN_LCD_PROUI
-  #include "../lcd/e3v2/proui/dwin.h"
-  #if ENABLED(LCD_BED_TRAMMING)
-    #include "../lcd/e3v2/proui/bed_tramming.h"
-  #endif
-#endif
 
 #include "custom_gcodes.h"
 
@@ -177,10 +164,7 @@ void customGcodeReport(const bool forReplay/*=true*/) {
     SERIAL_ECHOPGM("  C3");
     // SERIAL_ECHOPGM(" O", hmiData.laser_off_pwr);
     // SERIAL_ECHOPGM(" H", hmiData.target_laser_height);
-    if (1 ) // planner.laserMode
-      SERIAL_ECHOPGM(" L  ; Laser Mode enabled");
-    else
-      SERIAL_ECHOPGM(" F  ; Fan Mode enabled");
+      SERIAL_ECHOPGM(" L1  ; Laser Mode enabled");
     SERIAL_EOL();
   }
 #endif
