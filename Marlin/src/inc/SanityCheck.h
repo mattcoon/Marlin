@@ -267,16 +267,6 @@ static_assert(COUNT(arm) == LOGICAL_AXES, "AXIS_RELATIVE_MODES must contain " _L
 /**
  * Validate bed size
  */
-#if !defined(X_BED_SIZE) || !defined(Y_BED_SIZE)
-  #error "X_BED_SIZE and Y_BED_SIZE are required!"
-#else
-  #if HAS_X_AXIS
-    static_assert(X_MAX_LENGTH >= X_BED_SIZE, "Movement bounds (X_MIN_POS, X_MAX_POS) are too narrow to contain X_BED_SIZE.");
-  #endif
-  #if HAS_Y_AXIS
-    static_assert(Y_MAX_LENGTH >= Y_BED_SIZE, "Movement bounds (Y_MIN_POS, Y_MAX_POS) are too narrow to contain Y_BED_SIZE.");
-  #endif
-#endif
 
 /**
  * Granular software endstops (Marlin >= 1.1.7)
@@ -1445,41 +1435,6 @@ static_assert(NUM_SERVOS <= NUM_SERVO_PLUGS, "NUM_SERVOS (or some servo index) i
     static_assert(PROBING_MARGIN_LEFT  >= 0, "PROBING_MARGIN_LEFT must be >= 0.");
     static_assert(PROBING_MARGIN_RIGHT >= 0, "PROBING_MARGIN_RIGHT must be >= 0.");
   #endif
-  #define _MARGIN(A) TERN(IS_KINEMATIC, PRINTABLE_RADIUS, ((A##_BED_SIZE) / 2))
-  static_assert(PROBING_MARGIN       < _MARGIN(X), "PROBING_MARGIN is too large.");
-  static_assert(PROBING_MARGIN_BACK  < _MARGIN(Y), "PROBING_MARGIN_BACK is too large.");
-  static_assert(PROBING_MARGIN_FRONT < _MARGIN(Y), "PROBING_MARGIN_FRONT is too large.");
-  static_assert(PROBING_MARGIN_LEFT  < _MARGIN(X), "PROBING_MARGIN_LEFT is too large.");
-  static_assert(PROBING_MARGIN_RIGHT < _MARGIN(X), "PROBING_MARGIN_RIGHT is too large.");
-  #undef _MARGIN
-
-  /**
-   * Check for improper PROBE_OFFSET_[XYZ](MIN|MAX)
-   */
-  #define PROBE_OFFSET_ASSERT(varname, x, min, max) static_assert(WITHIN(x, min, max), varname " must be within " STRINGIFY(min) " and " STRINGIFY(max))
-  #if HAS_PROBE_XY_OFFSET
-    PROBE_OFFSET_ASSERT("PROBE_OFFSET_XMIN", PROBE_OFFSET_XMIN, -(X_BED_SIZE), X_BED_SIZE);
-    PROBE_OFFSET_ASSERT("PROBE_OFFSET_XMAX", PROBE_OFFSET_XMAX, -(X_BED_SIZE), X_BED_SIZE);
-    PROBE_OFFSET_ASSERT("PROBE_OFFSET_YMIN", PROBE_OFFSET_YMIN, -(Y_BED_SIZE), Y_BED_SIZE);
-    PROBE_OFFSET_ASSERT("PROBE_OFFSET_YMAX", PROBE_OFFSET_YMAX, -(Y_BED_SIZE), Y_BED_SIZE);
-  #endif
-  PROBE_OFFSET_ASSERT("PROBE_OFFSET_ZMIN", PROBE_OFFSET_ZMIN, -(Z_MAX_POS), Z_MAX_POS);
-  PROBE_OFFSET_ASSERT("PROBE_OFFSET_ZMAX", PROBE_OFFSET_ZMAX, -(Z_MAX_POS), Z_MAX_POS);
-
-  /**
-   * Check for improper NOZZLE_AS_PROBE or NOZZLE_TO_PROBE_OFFSET
-   */
-  constexpr xyz_pos_t sanity_nozzle_to_probe_offset = NOZZLE_TO_PROBE_OFFSET;
-  #if ENABLED(NOZZLE_AS_PROBE)
-    static_assert(sanity_nozzle_to_probe_offset.x == 0 && sanity_nozzle_to_probe_offset.y == 0,
-                  "NOZZLE_AS_PROBE requires the XY offsets in NOZZLE_TO_PROBE_OFFSET to both be 0.");
-  #endif
-  #if HAS_PROBE_XY_OFFSET
-    PROBE_OFFSET_ASSERT("NOZZLE_TO_PROBE_OFFSET.x", sanity_nozzle_to_probe_offset.x, PROBE_OFFSET_XMIN, PROBE_OFFSET_XMAX);
-    PROBE_OFFSET_ASSERT("NOZZLE_TO_PROBE_OFFSET.y", sanity_nozzle_to_probe_offset.y, PROBE_OFFSET_YMIN, PROBE_OFFSET_YMAX);
-  #endif
-  PROBE_OFFSET_ASSERT("NOZZLE_TO_PROBE_OFFSET.z", sanity_nozzle_to_probe_offset.z, PROBE_OFFSET_ZMIN, PROBE_OFFSET_ZMAX);
-  #undef PROBE_OFFSET_ASSERT
 
   /**
    * Make sure Z raise values are set
@@ -1723,12 +1678,6 @@ static_assert(NUM_SERVOS <= NUM_SERVO_PLUGS, "NUM_SERVOS (or some servo index) i
   static_assert(WITHIN(Z_SAFE_HOMING_Y_POINT, Y_MIN_POS, Y_MAX_POS), "Z_SAFE_HOMING_Y_POINT can't be reached by the nozzle.");
 #endif
 
-/**
- * Make sure Z_CLEARANCE_FOR_HOMING is below Z_MAX_POS
- */
-#if HAS_Z_AXIS
-  static_assert(Z_CLEARANCE_FOR_HOMING <= Z_MAX_POS, "Z_CLEARANCE_FOR_HOMING must be smaller than or equal to Z_MAX_POS.");
-#endif
 
 // Check Safe Bed Leveling settings
 #if HAS_SAFE_BED_LEVELING

@@ -242,6 +242,7 @@ public:
      * close it can get the RIGHT edge of the bed (unless the nozzle is able move
      * far enough past the right edge).
      */
+    #if 0
     static constexpr float _min_x(const xy_pos_t &probe_offset_xy=offset_xy) {
       return TERN(IS_KINEMATIC,
         (X_CENTER) - probe_radius(probe_offset_xy),
@@ -266,12 +267,14 @@ public:
         _MIN((Y_MAX_BED) - (PROBING_MARGIN_BACK), (Y_MAX_POS) + probe_offset_xy.y)
       );
     }
+#endif
 
-    static float min_x() { return _min_x() TERN_(NOZZLE_AS_PROBE, TERN_(HAS_HOME_OFFSET, - home_offset.x)); }
-    static float max_x() { return _max_x() TERN_(NOZZLE_AS_PROBE, TERN_(HAS_HOME_OFFSET, - home_offset.x)); }
-    static float min_y() { return _min_y() TERN_(NOZZLE_AS_PROBE, TERN_(HAS_HOME_OFFSET, - home_offset.y)); }
-    static float max_y() { return _max_y() TERN_(NOZZLE_AS_PROBE, TERN_(HAS_HOME_OFFSET, - home_offset.y)); }
+    static float min_x() { return CNC_data.x_min_pos; }
+    static float max_x() { return CNC_data.x_max_pos; }
+    static float min_y() { return CNC_data.y_min_pos; }
+    static float max_y() { return CNC_data.y_max_pos; }
 
+#if 0
     // constexpr helpers used in build-time static_asserts, relying on default probe offsets.
     class build_time {
       static constexpr xyz_pos_t default_probe_xyz_offset = xyz_pos_t(
@@ -295,6 +298,7 @@ public:
 
       static constexpr bool can_reach(const xy_pos_t &point) { return can_reach(point.x, point.y); }
     };
+#endif
 
     #if NEEDS_THREE_PROBE_POINTS
       // Retrieve three points to probe the bed. Any type exposing set(X,Y) may be used.

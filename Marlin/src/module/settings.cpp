@@ -840,6 +840,17 @@ void MarlinSettings::postprocess() {
     const uint16_t data_size = datasize();
     EEPROM_WRITE(data_size);
 
+      //
+      // Load the CNC settings
+      //
+      EEPROM_WRITE(CNC_data.x_bed_size);
+      EEPROM_WRITE(CNC_data.y_bed_size);
+      EEPROM_WRITE(CNC_data.x_max_pos);
+      EEPROM_WRITE(CNC_data.x_min_pos);
+      EEPROM_WRITE(CNC_data.y_max_pos);
+      EEPROM_WRITE(CNC_data.y_min_pos);
+      EEPROM_WRITE(CNC_data.z_max_pos);
+      
     const uint8_t e_factors = DISTINCT_AXES - (NUM_AXES);
     _FIELD_TEST(e_factors);
     EEPROM_WRITE(e_factors);
@@ -1842,6 +1853,18 @@ void MarlinSettings::postprocess() {
       uint16_t stored_size;
       EEPROM_READ_ALWAYS(stored_size);
       if ((eeprom_error = size_error(stored_size))) break;
+
+      //
+      // Load the CNC settings
+      //
+      EEPROM_READ(CNC_data.x_bed_size);
+      EEPROM_READ(CNC_data.y_bed_size);
+      EEPROM_READ(CNC_data.x_max_pos);
+      EEPROM_READ(CNC_data.x_min_pos);
+      EEPROM_READ(CNC_data.y_max_pos);
+      EEPROM_READ(CNC_data.y_min_pos);
+      EEPROM_READ(CNC_data.z_max_pos);
+      
 
       //
       // Extruder Parameter Count
@@ -3090,6 +3113,13 @@ void MarlinSettings::postprocess() {
  * M502 - Reset Configuration
  */
 void MarlinSettings::reset() {
+    CNC_data.x_bed_size = DEF_X_BED_SIZE;
+    CNC_data.y_bed_size = DEF_Y_BED_SIZE;
+    CNC_data.x_min_pos  = DEF_X_MIN_POS;
+    CNC_data.y_min_pos  = DEF_Y_MIN_POS;
+    CNC_data.x_max_pos  = DEF_X_MAX_POS;
+    CNC_data.y_max_pos  = DEF_Y_MAX_POS;
+    CNC_data.z_max_pos  = DEF_Z_MAX_POS;
   LOOP_DISTINCT_AXES(i) {
     planner.settings.max_acceleration_mm_per_s2[i] = pgm_read_dword(&_DMA[ALIM(i, _DMA)]);
     #if ENABLED(EDITABLE_STEPS_PER_UNIT)

@@ -31,9 +31,10 @@
 #include "../module/stepper/indirection.h"
 #include "../module/endstops.h"
 
+CNC_data_t CNC_data;
+
+
 #define WRITE_CFG(v) buffer +=v;
-
-
 
 void writeSDConfig(void) {
 
@@ -52,45 +53,50 @@ void writeSDConfig(void) {
     // Announce current units, in case inches are being displayed
     //
     #if ENABLED(INCH_MODE_SUPPORT)
-      WRITE_CFG("  G2"+ String(AS_DIGIT(parser.linear_unit_factor == 1.0))+ " ;");
+      WRITE_CFG("G2"+ String(AS_DIGIT(parser.linear_unit_factor == 1.0))+ " ;");
     #else
-      WRITE_CFG("  G21 ;");
+      WRITE_CFG("G21 ;");
     #endif
     WRITE_CFG(TERN_(INCH_MODE_SUPPORT, parser.linear_unit_factor != 1.0 ? " (in)\n" :) PSTR(" (mm)\n"))
 
     //
     // M92 Steps per Unit
     //
-    WRITE_CFG("  M92 X")
+    WRITE_CFG("M92 X")
     WRITE_CFG(String(LINEAR_UNIT(planner.settings.axis_steps_per_mm[X_AXIS])))
     WRITE_CFG(SP_Y_STR+ String(LINEAR_UNIT(planner.settings.axis_steps_per_mm[Y_AXIS])))
     WRITE_CFG(SP_Z_STR+ String(LINEAR_UNIT(planner.settings.axis_steps_per_mm[Z_AXIS]))+"\n")
 
+    // physical settings
+    buffer += "C100X"+ String(CNC_data.x_min_pos) + "Y" + String(CNC_data.y_min_pos) + "\n";
+    buffer += "C101X"+ String(CNC_data.x_max_pos) + "Y" + String(CNC_data.y_max_pos) + "Z" + String(CNC_data.z_max_pos) + "\n";
+    buffer += "C102X"+ String(CNC_data.x_bed_size) + "Y" + String(CNC_data.y_bed_size) + "\n";
+
     //
     // M203 Maximum feedrates (units/s)
     //
-    WRITE_CFG(("  M203 X")+ String(LINEAR_UNIT(planner.settings.max_feedrate_mm_s[X_AXIS])));
+    WRITE_CFG(("M203 X")+ String(LINEAR_UNIT(planner.settings.max_feedrate_mm_s[X_AXIS])));
     WRITE_CFG(SP_Y_STR+ String(LINEAR_UNIT(planner.settings.max_feedrate_mm_s[Y_AXIS])));
     WRITE_CFG(SP_Z_STR+ String(LINEAR_UNIT(planner.settings.max_feedrate_mm_s[Z_AXIS]))+"\n");
 
     //
     // M201 Maximum Acceleration (units/s2)
     //
-    WRITE_CFG("  M201 X"+ String(LINEAR_UNIT(planner.settings.max_acceleration_mm_per_s2[X_AXIS])));
+    WRITE_CFG("M201 X"+ String(LINEAR_UNIT(planner.settings.max_acceleration_mm_per_s2[X_AXIS])));
     WRITE_CFG(SP_Y_STR+ String(LINEAR_UNIT(planner.settings.max_acceleration_mm_per_s2[Y_AXIS])));
     WRITE_CFG(SP_Z_STR+ String(LINEAR_UNIT(planner.settings.max_acceleration_mm_per_s2[Z_AXIS]))+"\n");
 
     //
     // M204 Acceleration (units/s2)
     //
-    WRITE_CFG("  M204 P" + String(LINEAR_UNIT(planner.settings.acceleration)));
+    WRITE_CFG("M204 P" + String(LINEAR_UNIT(planner.settings.acceleration)));
     WRITE_CFG(" R" + String(LINEAR_UNIT(planner.settings.retract_acceleration)));
     WRITE_CFG(SP_T_STR+ String(LINEAR_UNIT(planner.settings.travel_acceleration))+"\n");
 
     //
     // M205 "Advanced" Settings
     //
-    WRITE_CFG("  M205 B"+ String(LINEAR_UNIT(planner.settings.min_segment_time_us)));
+    WRITE_CFG("M205 B"+ String(LINEAR_UNIT(planner.settings.min_segment_time_us)));
     WRITE_CFG(" S"+ String(LINEAR_UNIT(planner.settings.min_feedrate_mm_s)));
     WRITE_CFG(SP_T_STR+ String(LINEAR_UNIT(planner.settings.min_travel_feedrate_mm_s)));
     #if ENABLED(CLASSIC_JERK)
@@ -102,15 +108,22 @@ void writeSDConfig(void) {
     //
     // M206 Home Offset
     //
-    WRITE_CFG("  M206 X"+ String(LINEAR_UNIT(home_offset.x)));
+    WRITE_CFG("M206 X"+ String(LINEAR_UNIT(home_offset.x)));
     WRITE_CFG(SP_Y_STR+ String(LINEAR_UNIT(home_offset.y)));
     WRITE_CFG(SP_Z_STR+ String(LINEAR_UNIT(home_offset.z))+ "\n");
+
+    #if ENABLED(POWER_LOSS_RECOVERY)
+      buffer += "M413S" + String(recovery.enabled) + "\n";
+    #endif
+
+    // ui sounds
+    buffer += "M300E" + String(ui.sound_on?1:0) + "\n";
 
     //
     // M666 Endstops Adjustment
     //
     #if ANY(DELTA, HAS_EXTRA_ENDSTOPS)
-    WRITE_CFG("  M666");
+    WRITE_CFG("M666");
       #if ENABLED(X_DUAL_ENDSTOPS)
         WRITE_CFG(SP_X_STR+ String(LINEAR_UNIT(endstops.x2_endstop_adj)));
       #endif
@@ -127,7 +140,7 @@ void writeSDConfig(void) {
     //
     // Probe Offset
     //
-      WRITE_CFG("  M851 X"+ String(LINEAR_UNIT(probe.offset_xy.x)));
+      WRITE_CFG("M851 X"+ String(LINEAR_UNIT(probe.offset_xy.x)));
       WRITE_CFG(SP_Y_STR+ String(LINEAR_UNIT(probe.offset_xy.y)));
       WRITE_CFG(SP_Z_STR+ String(LINEAR_UNIT(probe.offset.z)) + "\n");
 
@@ -135,7 +148,7 @@ void writeSDConfig(void) {
       //
       // TMC Stepper driver current
       //
-    WRITE_CFG("  M906");
+    WRITE_CFG("M906");
     #if AXIS_IS_TMC(X)
       WRITE_CFG(SP_X_STR+ String( stepperX.getMilliamps()));
     #endif
@@ -161,7 +174,7 @@ void writeSDConfig(void) {
     //
     // TMC stepping mode
     //
-    // SERIAL_ECHOPGM("  M569 S1");
+    // SERIAL_ECHOPGM("M569 S1");
     // if (etc) SERIAL_ECHO(C(' '), etc);
     // if (eol) SERIAL_EOL();
 

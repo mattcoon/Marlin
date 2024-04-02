@@ -69,9 +69,8 @@ void C100() {
   // C100 - Change Physical minimums
   // X<min> Y<min> Z<min>
   // Set the minimum position for each axis
-  // if (parser.seenval('X')) PRO_data.x_min_pos = parser.value_axis('X');
-  // if (parser.seenval('Y')) PRO_data.y_min_pos = parser.value_axis('Y');
-  // if (parser.seenval('Z')) PRO_data.z_min_pos = parser.value_axis('Z');
+  if (parser.seenval('X')) CNC_data.x_min_pos = parser.value_axis_units(X_AXIS);
+  if (parser.seenval('Y')) CNC_data.y_min_pos = parser.value_axis_units(Y_AXIS);
   C100_report();
 }
 
@@ -79,9 +78,8 @@ void C100_report(const bool forReplay/*=true*/) {
   gcode.report_heading(forReplay, F("Physical Minimums"));
   gcode.report_echo_start(forReplay);
   SERIAL_ECHOPGM("  C100");
-  // SERIAL_ECHOPGM(" X", PRO_data.x_min_pos);
-  // SERIAL_ECHOPGM(" Y", PRO_data.y_min_pos);
-  // SERIAL_ECHOPGM(" Z", PRO_data.z_min_pos);
+  SERIAL_ECHOPGM(" X", CNC_data.x_min_pos);
+  SERIAL_ECHOPGM(" Y", CNC_data.y_min_pos);
   SERIAL_EOL();
 }
 
@@ -89,9 +87,9 @@ void C101() {
   // C101 - Change Physical maximums
   // X<max> Y<max> Z<max>
   // Set the maximum position for each axis
-  // if (parser.seenval('X')) PRO_data.x_max_pos = parser.value_axis('X');
-  // if (parser.seenval('Y')) PRO_data.y_max_pos = parser.value_axis('Y');
-  // if (parser.seenval('Z')) PRO_data.z_max_pos = parser.value_axis('Z');
+  if (parser.seenval('X')) CNC_data.x_max_pos = parser.value_axis_units(X_AXIS);
+  if (parser.seenval('Y')) CNC_data.y_max_pos = parser.value_axis_units(Y_AXIS);
+  if (parser.seenval('Z')) CNC_data.z_max_pos = parser.value_axis_units(Z_AXIS);
   C101_report();
 }
 
@@ -99,9 +97,9 @@ void C101_report(const bool forReplay/*=true*/) {
   gcode.report_heading(forReplay, F("Physical Maximums"));
   gcode.report_echo_start(forReplay);
   SERIAL_ECHOPGM("  C101");
-  // SERIAL_ECHOPGM(" X", PRO_data.x_max_pos);
-  // SERIAL_ECHOPGM(" Y", PRO_data.y_max_pos);
-  // SERIAL_ECHOPGM(" Z", PRO_data.z_max_pos);
+  SERIAL_ECHOPGM(" X", CNC_data.x_max_pos);
+  SERIAL_ECHOPGM(" Y", CNC_data.y_max_pos);
+  SERIAL_ECHOPGM(" Z", CNC_data.z_max_pos);
   SERIAL_EOL();
 }
 
@@ -109,8 +107,8 @@ void C102() {
   // C102 - Change Bed size
   // X<max> Y<max>
   // Set the maximum size for the bed
-  // if (parser.seenval('X')) PRO_data.x_bed_size = parser.value_axis('X');
-  // if (parser.seenval('Y')) PRO_data.y_bed_size = parser.value_axis('Y');
+  if (parser.seenval('X')) CNC_data.x_bed_size = parser.value_axis_units(X_AXIS);
+  if (parser.seenval('Y')) CNC_data.y_bed_size = parser.value_axis_units(Y_AXIS);
   C102_report();
 }
 
@@ -118,8 +116,8 @@ void C102_report(const bool forReplay/*=true*/) {
   gcode.report_heading(forReplay, F("Bed Size"));
   gcode.report_echo_start(forReplay);
   SERIAL_ECHOPGM("  C102");
-  // SERIAL_ECHOPGM(" X", PRO_data.x_bed_size);
-  // SERIAL_ECHOPGM(" Y", PRO_data.y_bed_size);
+  SERIAL_ECHOPGM(" X", CNC_data.x_bed_size);
+  SERIAL_ECHOPGM(" Y", CNC_data.y_bed_size);
   SERIAL_EOL();
 }
 

@@ -60,3 +60,39 @@
 #ifndef __MARLIN_DEPS__
   #include HAL_PATH(.., inc/Conditionals_adv.h)
 #endif
+
+constexpr uint16_t DEF_X_BED_SIZE = X_BED_SIZE;
+constexpr uint16_t DEF_Y_BED_SIZE = Y_BED_SIZE;
+constexpr int16_t DEF_X_MIN_POS = X_MIN_POS;
+constexpr int16_t DEF_Y_MIN_POS = Y_MIN_POS;
+constexpr int16_t DEF_X_MAX_POS = X_MAX_POS;
+constexpr int16_t DEF_Y_MAX_POS = Y_MAX_POS;
+constexpr int16_t DEF_Z_MAX_POS = Z_MAX_POS;
+
+typedef struct { // Do not change this data structure
+  uint16_t x_bed_size = DEF_X_BED_SIZE;
+  uint16_t y_bed_size = DEF_Y_BED_SIZE;
+  int16_t x_min_pos  = DEF_X_MIN_POS;
+  int16_t y_min_pos  = DEF_Y_MIN_POS;
+  int16_t x_max_pos  = DEF_X_MAX_POS;
+  int16_t y_max_pos  = DEF_Y_MAX_POS;
+  int16_t z_max_pos  = DEF_Z_MAX_POS;
+} CNC_data_t;
+extern CNC_data_t CNC_data;
+
+#undef X_BED_SIZE
+#undef Y_BED_SIZE
+#undef X_MIN_POS
+#undef Y_MIN_POS
+#undef X_MAX_POS
+#undef Y_MAX_POS
+#undef Z_MAX_POS
+
+#define X_BED_SIZE (float)CNC_data.x_bed_size
+#define Y_BED_SIZE (float)CNC_data.y_bed_size
+#define X_MIN_POS  (float)CNC_data.x_min_pos
+#define Y_MIN_POS  (float)CNC_data.y_min_pos
+#define X_MAX_POS  (float)CNC_data.x_max_pos
+#define Y_MAX_POS  (float)CNC_data.y_max_pos
+#define Z_MAX_POS  (float)CNC_data.z_max_pos
+

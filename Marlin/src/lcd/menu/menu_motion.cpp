@@ -44,7 +44,7 @@
   #include "../../feature/bedlevel/bedlevel.h"
 #endif
 
-constexpr bool has_large_area() {
+bool has_large_area() {
   return TERN0(HAS_X_AXIS, (X_BED_SIZE) >= 1000) || TERN0(HAS_Y_AXIS, (Y_BED_SIZE) >= 1000) || TERN0(HAS_Z_AXIS, (Z_MAX_POS) >= 1000);
 }
 
