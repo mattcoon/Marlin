@@ -47,8 +47,6 @@ jobs:
         echo "::set-output name=filename::V1-CNC-${BOARDTMP}-${VERSION}.bin"
         sed -i "s/#define MOTHERBOARD.*/#define MOTHERBOARD BOARD_BTT_SKR_PRO_V1_2/g" Marlin/Configuration.h
         pio run -e BIGTREE_SKR_PRO
-        mkdir temp
-        mv .pio/build/BIGTREE_SKR_PRO/*.bin temp/build.bin
       env:
         BOARD: ${{ matrix.board }}
 
