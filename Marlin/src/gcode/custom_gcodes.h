@@ -22,6 +22,7 @@
 #pragma once
 
 
+void GRBLcode(const int16_t codenum);
 void customGcode(const int16_t codenum);
 void customGcodeReport(const bool forReplay=true);
 

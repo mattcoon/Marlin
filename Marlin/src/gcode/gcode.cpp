@@ -1136,7 +1136,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
     #endif
 
     #if HAS_CGCODE
-  	  case '?' : // GRBL simulation
+  	  case '?' : GRBLcode(parser.codenum); break;               // GRBL simulation
       case 'C' : customGcode(parser.codenum); break;               // Cn: Custom Gcodes
     #endif
 

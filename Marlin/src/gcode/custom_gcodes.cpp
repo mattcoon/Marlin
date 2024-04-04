@@ -108,6 +108,36 @@ void C102_report(const bool forReplay/*=true*/) {
   SERIAL_EOL();
 }
 
+
+#if ENABLED(LASER_FEATURE)
+  void C3 () {
+    /* C3 - Laser Mode enable/disable 
+          L - enable Laser mode. commands G3-5 enabled and fan changes sync with movement
+          F - enable Fan mode. G3-5 disabled. fan changes immediately
+          fan has priority if both selected
+    */
+    C3_report();
+    return;
+  }
+
+  void C3_report(const bool forReplay/*=true*/) {
+    gcode.report_heading(forReplay, F("Laser/Fan Configuration"));
+    gcode.report_echo_start(forReplay);
+    SERIAL_ECHOPGM("  C3");
+      SERIAL_ECHOPGM(" L1  ; Laser Mode enabled");
+    SERIAL_EOL();
+  }
+#endif
+
+void GRBLcode(const int16_t codenum) {
+  switch(codenum) {
+    #if ENABLED(LASER_FEATURE)
+      case 32:   C3(); break;      // set LaserMode
+    #endif
+    default: cError(); break;
+  }
+}
+
 // Special Creality DWIN GCodes
 void customGcode(const int16_t codenum) {
   switch(codenum) {
@@ -117,9 +147,6 @@ void customGcode(const int16_t codenum) {
     case 100: C100(); break;    // Change Physical minimums
     case 101: C101(); break;    // Change Physical maximums
     case 102: C102(); break;    // Change Bed size
-    #if ENABLED(NOZZLE_PARK_FEATURE)
-      case 125: C125(); break;  // Set park position
-    #endif
     // case 562: C562(); break;    // Invert Extruder
     #if ENABLED(LASER_FEATURE)
       case 3:   C3(); break;                // set L = laser mode, F = fan mode
@@ -138,36 +165,6 @@ void customGcodeReport(const bool forReplay/*=true*/) {
   #endif
 }
 
-
-#if ENABLED(LASER_FEATURE)
-  void C3 () {
-    /* C3 - Laser Mode enable/disable 
-          L - enable Laser mode. commands G3-5 enabled and fan changes sync with movement
-          F - enable Fan mode. G3-5 disabled. fan changes immediately
-          fan has priority if both selected
-    */
-    // if (parser.seen("FHLO")) {
-    //   // set to fan mode
-    //   if (parser.seen("F")) setLaserMode(false);
-    //   // Set to Laser mode
-    //   else if (parser.seen("L")) setLaserMode(true);
-    //   // Set Laser Off Limit. used in G0 moves to keep laser active but not burning.
-    //   if (parser.seenval('O')) hmiData.laser_off_pwr = parser.byteval('O');
-    //   if (parser.seenval('H')) hmiData.target_laser_height = parser.byteval('H');
-    C3_report();
-    return;
-  }
-
-  void C3_report(const bool forReplay/*=true*/) {
-    gcode.report_heading(forReplay, F("Laser/Fan Configuration"));
-    gcode.report_echo_start(forReplay);
-    SERIAL_ECHOPGM("  C3");
-    // SERIAL_ECHOPGM(" O", hmiData.laser_off_pwr);
-    // SERIAL_ECHOPGM(" H", hmiData.target_laser_height);
-      SERIAL_ECHOPGM(" L1  ; Laser Mode enabled");
-    SERIAL_EOL();
-  }
-#endif
 
 
 #endif // HAS_CGCODE
