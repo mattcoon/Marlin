@@ -544,6 +544,11 @@ typedef struct SettingsDataStruct {
   #endif
 
   //
+  // CNC settings
+  //
+  uint8_t cnc_settings[sizeof(CNC_data_t)];
+
+  //
   // CASELIGHT_USES_BRIGHTNESS
   //
   #if CASELIGHT_USES_BRIGHTNESS
@@ -841,15 +846,14 @@ void MarlinSettings::postprocess() {
     EEPROM_WRITE(data_size);
 
       //
-      // Load the CNC settings
+      // Save the CNC settings
       //
-      EEPROM_WRITE(CNC_data.x_bed_size);
-      EEPROM_WRITE(CNC_data.y_bed_size);
-      EEPROM_WRITE(CNC_data.x_max_pos);
-      EEPROM_WRITE(CNC_data.x_min_pos);
-      EEPROM_WRITE(CNC_data.y_max_pos);
-      EEPROM_WRITE(CNC_data.y_min_pos);
-      EEPROM_WRITE(CNC_data.z_max_pos);
+    {
+      _FIELD_TEST(cnc_data);
+      char cnc_data[sizeof(CNC_data_t)] = { 0 };
+      memcpy(cnc_data, &CNC_data, sizeof(CNC_data_t));
+      EEPROM_WRITE(cnc_data);
+    }
       
     const uint8_t e_factors = DISTINCT_AXES - (NUM_AXES);
     _FIELD_TEST(e_factors);
@@ -1857,14 +1861,10 @@ void MarlinSettings::postprocess() {
       //
       // Load the CNC settings
       //
-      EEPROM_READ(CNC_data.x_bed_size);
-      EEPROM_READ(CNC_data.y_bed_size);
-      EEPROM_READ(CNC_data.x_max_pos);
-      EEPROM_READ(CNC_data.x_min_pos);
-      EEPROM_READ(CNC_data.y_max_pos);
-      EEPROM_READ(CNC_data.y_min_pos);
-      EEPROM_READ(CNC_data.z_max_pos);
-      
+      char cnc_data[sizeof(CNC_data_t)] = { 0 };
+      _FIELD_TEST(cnc_data);
+      EEPROM_READ(cnc_data);
+      memcpy(&CNC_data, cnc_data, sizeof(CNC_data_t));
 
       //
       // Extruder Parameter Count
