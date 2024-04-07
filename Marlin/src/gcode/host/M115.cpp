@@ -126,6 +126,8 @@ void GcodeSuite::M115() {
 
     // QUOTED_STRINGS
     TERN_(GCODE_QUOTED_STRINGS, cap_line(F("QUOTED_STRINGS")));
+    
+    cap_line(F("CUSTOM_GCODES"));
 
     // SERIAL_XON_XOFF
     cap_line(F("SERIAL_XON_XOFF"), ENABLED(SERIAL_XON_XOFF));
