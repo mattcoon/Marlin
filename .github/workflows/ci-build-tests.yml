@@ -1,16 +1,15 @@
 #
-# test-builds.yml
+# ci-build-tests.yml
 # Do test builds to catch compile errors
 #
 
-name: CI
+name: CI - Build Tests
 
 on:
   pull_request:
     branches:
     - bugfix-2.1.x
     - 2.1.x
-    - MattCNC2024
     paths-ignore:
     - config/**
     - data/**
@@ -20,7 +19,6 @@ on:
     branches:
     - bugfix-2.1.x
     - 2.1.x
-    - MattCNC2024
     paths-ignore:
     - config/**
     - data/**
@@ -29,8 +27,8 @@ on:
 
 jobs:
   test_builds:
-    name: Run All Tests
-    if: github.repository == 'mattcoon/Marlin'
+    name: Build Test
+    if: github.repository == 'MarlinFirmware/Marlin'
 
     runs-on: ubuntu-latest
 
