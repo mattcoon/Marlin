@@ -3610,7 +3610,7 @@
    *  - SERVO   (S0 - S180)
    */
   #define CUTTER_POWER_UNIT PWM255
-
+  #define CUTTER_POWER_MAX 255
   /**
    * Relative Cutter Power
    * Normally, 'M3 O<power>' sets
