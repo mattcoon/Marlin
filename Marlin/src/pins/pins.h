@@ -756,7 +756,7 @@
 #elif MB(BTT_SKR_PRO_V1_1)
   #include "stm32f4/pins_BTT_SKR_PRO_V1_1.h"        // STM32F4                              env:BTT_SKR_PRO env:BTT_SKR_PRO_usb_flash_drive
 #elif MB(BTT_SKR_PRO_V1_2)
-  #include "stm32f4/pins_BTT_SKR_PRO_V1_2.h"        // STM32F4                              env:BTT_SKR_PRO env:BTT_SKR_PRO_usb_flash_drive
+  #include "stm32f4/pins_BTT_SKR_PRO_V1_2.h"        // STM32F4                              env:BTT_SKR_PRO env:BTT_SKR_PRO_LR4
 #elif MB(BTT_BTT002_V1_0)
   #include "stm32f4/pins_BTT_BTT002_V1_0.h"         // STM32F4                              env:BTT_BTT002 env:BTT_BTT002_VET6
 #elif MB(BTT_E3_RRF)
