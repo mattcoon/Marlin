@@ -14,7 +14,7 @@ jobs:
     name: Bump Distribution Date
     if: github.repository == 'mattcoon/Marlin'
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
 
