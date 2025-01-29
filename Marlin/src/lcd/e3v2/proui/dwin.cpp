@@ -40,8 +40,6 @@
 #include "../../marlinui.h"
 #include "../../extui/ui_api.h"
 #include "../../../MarlinCore.h"
-#include "../../../core/serial.h"
-#include "../../../core/macros.h"
 #include "../../../module/temperature.h"
 #include "../../../module/printcounter.h"
 #include "../../../module/motion.h"
@@ -2209,6 +2207,13 @@ void setMoveX() { hmiValue.axis = X_AXIS; setPFloatOnClick(X_MIN_POS, X_MAX_POS,
 void setMoveY() { hmiValue.axis = Y_AXIS; setPFloatOnClick(Y_MIN_POS, Y_MAX_POS, UNITFDIGITS, applyMove, liveMove); }
 void setMoveZ() { hmiValue.axis = Z_AXIS; setPFloatOnClick(Z_MIN_POS, Z_MAX_POS, UNITFDIGITS, applyMove, liveMove); }
 
+#if ENABLED(Z_STEPPER_AUTO_ALIGN)
+  void autoZAlign() {
+    LCD_MESSAGE(MSG_AUTO_Z_ALIGN);
+    queue.inject(F("G34"));
+  }
+#endif
+
 #if HAS_HOTEND
   void setMoveE() {
     const float e_min = current_position.e - (EXTRUDE_MAXLENGTH),
@@ -2672,7 +2677,7 @@ void applyMaxAccel() { planner.set_max_acceleration(hmiValue.axis, menuData.valu
       default: break;
     }
   }
-  void applyHomingFR() { updateHomingFR(HMI_value.axis, MenuData.Value); }
+  void applyHomingFR() { updateHomingFR(hmiValue.axis, menuData.value); }
   #if HAS_X_AXIS
     void setHomingX() { hmiValue.axis = X_AXIS; setIntOnClick(min_homing_edit_values.x, max_homing_edit_values.x, homing_feedrate_mm_m.x, applyHomingFR); }
   #endif
@@ -3799,15 +3804,15 @@ void drawMaxAccelMenu() {
     if (SET_MENU(homingFRMenu, MSG_HOMING_FEEDRATE, 4)) {
       BACK_ITEM(drawMotionMenu);
       #if HAS_X_AXIS
-        static uint16_t xhome = static_cast<uint16_t>(homing_feedrate_mm_m.x);
+        uint16_t xhome = static_cast<uint16_t>(homing_feedrate_mm_m.x);
         EDIT_ITEM(ICON_MaxSpeedJerkX, MSG_HOMING_FEEDRATE_X, onDrawPIntMenu, setHomingX, &xhome);
       #endif
       #if HAS_Y_AXIS
-        static uint16_t yhome = static_cast<uint16_t>(homing_feedrate_mm_m.y);
+        uint16_t yhome = static_cast<uint16_t>(homing_feedrate_mm_m.y);
         EDIT_ITEM(ICON_MaxSpeedJerkY, MSG_HOMING_FEEDRATE_Y, onDrawPIntMenu, setHomingY, &yhome);
       #endif
       #if HAS_Z_AXIS
-        static uint16_t zhome = static_cast<uint16_t>(homing_feedrate_mm_m.z);
+        uint16_t zhome = static_cast<uint16_t>(homing_feedrate_mm_m.z);
         EDIT_ITEM(ICON_MaxSpeedJerkZ, MSG_HOMING_FEEDRATE_Z, onDrawPIntMenu, setHomingZ, &zhome);
       #endif
     }
@@ -4103,6 +4108,9 @@ void drawMaxAccelMenu() {
       #endif
       #if HAS_Z_AXIS
         MENU_ITEM(ICON_HomeZ, MSG_AUTO_HOME_Z, onDrawMenuItem, homeZ);
+      #endif
+      #if ENABLED(Z_STEPPER_AUTO_ALIGN)
+        MENU_ITEM(ICON_HomeZ, MSG_AUTO_Z_ALIGN, onDrawMenuItem, autoZAlign);
       #endif
       #if ENABLED(MESH_BED_LEVELING)
         EDIT_ITEM(ICON_ZAfterHome, MSG_Z_AFTER_HOME, onDrawPInt8Menu, setZAfterHoming, &hmiData.zAfterHoming);
