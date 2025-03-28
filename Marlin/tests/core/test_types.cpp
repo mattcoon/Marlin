@@ -22,6 +22,7 @@
 
 #include "../test/unit_tests.h"
 #include "src/core/types.h"
+#include "src/core/millis_t.h"
 
 MARLIN_TEST(types, XYval_const_as_bools) {
   const XYval<int> xy_const_true = {1, 2};
@@ -655,4 +656,11 @@ MARLIN_TEST(types, SString) {
   str.append(" ... ", 1234.5f, '*', p_float_t(2345.602, 3), F(" = "), 1234.5 * 2345.602);
 
   TEST_ASSERT_TRUE(strcmp_P(str, PSTR("Hello World!-123456------   < spaces!33\n^ eol! ... 1234.50*2345.602 = 2895645.67")) == 0);
+}
+
+MARLIN_TEST(types, PENDING) {
+  TEST_ASSERT_TRUE(PENDING(0x0000FFFFUL, 0x00010000UL));             // <= ~24.4 days
+  TEST_ASSERT_TRUE(ELAPSED(0x0090000AUL, 0x00900000UL));             // <= ~24.4 days
+  TEST_ASSERT_FALSE(PENDING(0x0000FFFFUL, 0x7FFFFFF0UL + 0xFFFFUL)); // <= ~24.4 days
+  TEST_ASSERT_TRUE(PENDING(0x80000000UL, 0x7FFFFFF0UL, 0x0020UL));   // <= ~48.8 days
 }
