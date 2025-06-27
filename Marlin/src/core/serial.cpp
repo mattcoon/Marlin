@@ -27,6 +27,8 @@
   #include "../feature/ethernet.h"
 #endif
 
+#include <stdlib.h> // dtostrf
+
 // Echo commands to the terminal by default in dev mode
 uint8_t marlin_debug_flags = TERN(MARLIN_DEV_MODE, MARLIN_DEBUG_ECHO, MARLIN_DEBUG_NONE);
 
@@ -111,10 +113,6 @@ void serial_ternary(FSTR_P const pre, const bool onoff, FSTR_P const on, FSTR_P 
   if (!onoff && off) SERIAL_ECHO(off);
   if (post)          SERIAL_ECHO(post);
 }
-
-void serialprint_onoff(const bool onoff) { SERIAL_ECHO(onoff ? F(STR_ON) : F(STR_OFF)); }
-void serialprintln_onoff(const bool onoff) { serialprint_onoff(onoff); SERIAL_EOL(); }
-void serialprint_truefalse(const bool tf) { SERIAL_ECHO(tf ? F("true") : F("false")); }
 
 void print_bin(uint16_t val) {
   for (uint8_t i = 16; i--;) {
