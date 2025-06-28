@@ -94,7 +94,7 @@ bool relative_mode; // = false
 #ifdef Z_IDLE_HEIGHT
   #define Z_INIT_POS Z_IDLE_HEIGHT
 #else
-  #define Z_INIT_POS Z_HOME_POS
+  #define Z_INIT_POS Z_MIN_POS
 #endif
 
 xyze_pos_t current_position = LOGICAL_AXIS_ARRAY(0, X_HOME_POS, Y_HOME_POS, Z_INIT_POS, I_HOME_POS, J_HOME_POS, K_HOME_POS, U_HOME_POS, V_HOME_POS, W_HOME_POS);
