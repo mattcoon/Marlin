@@ -1300,7 +1300,7 @@
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE { 300, 300, 15 } // { 50, 50, 15, 25 } // { 300, 300, 5, 25 }
+#define DEFAULT_MAX_FEEDRATE { 6000, 6000, 30 } // { 50, 50, 15, 25 } // { 300, 300, 5, 25 }
 
 #define DEFAULT_FEEDRATE_MM_M (50*60)
 
@@ -1315,7 +1315,7 @@
  * Override with M201
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION { 1000, 1000, 80 } // { 180, 180, 80, 180 } // { 3000, 3000, 100, 10000 }
+#define DEFAULT_MAX_ACCELERATION { 20000, 20000, 80 } // { 180, 180, 80, 180 } // { 3000, 3000, 100, 10000 }
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
