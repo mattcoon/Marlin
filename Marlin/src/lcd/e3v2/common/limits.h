@@ -65,6 +65,12 @@ constexpr xyze_float_t max_acceleration_edit_values =
                          #endif
                        ;
 
+#if HAS_SPINDLE_ACCELERATION
+  constexpr float min_acceleration_edit_values_spindle = 1,
+                  default_acceleration_spindle = DEFAULT_ACCELERATION_SPINDLE,
+                  max_acceleration_edit_values_spindle = default_acceleration_spindle * DEFAULT_MAX_MULTIPLIER;
+#endif
+
 //
 // Max Jerk limits
 //
@@ -115,9 +121,9 @@ constexpr xyze_float_t max_steps_edit_values =
 
   constexpr xyz_uint_t min_homing_edit_values = NUM_AXIS_ARRAY_1(MIN_HOMING_EDIT_VALUE);
   #ifdef DEFAULT_MAX_MULTIPLIER
-    constexpr xyz_uint_t default_homing = HOMING_FEEDRATE_MM_M;
+    constexpr xyz_long_t default_homing = HOMING_FEEDRATE_MM_M;
   #endif
-  constexpr xyz_uint_t max_homing_edit_values =
+  constexpr xyz_long_t max_homing_edit_values =
                            #ifdef DEFAULT_MAX_MULTIPLIER
                              default_homing * DEFAULT_MAX_MULTIPLIER
                            #else
